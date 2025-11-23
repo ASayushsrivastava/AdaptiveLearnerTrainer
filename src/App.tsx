@@ -1,18 +1,41 @@
 import React, { useState } from "react";
-import FlashcardEngine from "./components/FlashcardEngine";
+import DifficultySelect from "./screens/DifficultySelect";
+import TestContainer from "./screens/TestContainer";
+import FinalScore from "./screens/FinalScore";
 
 const App: React.FC = () => {
-  const [skill, setSkill] = useState(0);
+  const [stage, setStage] = useState<"select" | "test" | "result">("select");
+  const [difficulty, setDifficulty] = useState(1);
+  const [score, setScore] = useState(0);
+  const [learned, setLearned] = useState(0);
+
+  const handleSelect = (d: number) => {
+    setDifficulty(d);
+    setStage("test");
+  };
+
+  const handleComplete = (finalScore: number, learnedCount: number) => {
+    setScore(finalScore);
+    setLearned(learnedCount);
+    setStage("result");
+  };
+
+  const restart = () => {
+    setStage("select");
+    setScore(0);
+    setLearned(0);
+  };
 
   return (
-    <>
-      <div>
-        <h2>
-          Hello from <strong>React</strong>
-          <FlashcardEngine onSkillChange={setSkill} />
-        </h2>
-      </div>
-    </>
+    <div>
+      {stage === "select" && <DifficultySelect onSelect={handleSelect} />}
+      {stage === "test" && (
+        <TestContainer difficulty={difficulty} onComplete={handleComplete} />
+      )}
+      {stage === "result" && (
+        <FinalScore score={score} learned={learned} onRestart={restart} />
+      )}
+    </div>
   );
 };
 
