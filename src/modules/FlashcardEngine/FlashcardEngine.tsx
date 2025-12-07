@@ -69,7 +69,7 @@ const FlashcardEngine: React.FC<Props> = ({ busRef }) => {
     if (!question) return;
     if (completed) return;
 
-    let feedbackDifficulty = 0; // 1 easy, 2 medium, 3 hard from UI below
+    let feedbackDifficulty = 0; // 1  2  3
     const selectedDiffEl = document.querySelector<HTMLInputElement>(
       "input[name='difficulty-feedback']:checked"
     );
@@ -78,23 +78,35 @@ const FlashcardEngine: React.FC<Props> = ({ busRef }) => {
 
     feedbackDifficulty = Number(selectedDiffEl.value);
 
+    let scored = false;
     // Score handling
     if (selected === question.correctIndex && !isRevealed) {
-      setCorrect((c) => c + 1);
+      scored = true;
+      setCorrect((c) => {
+        const newScore = c + 1;
+        busRef.current.onScoreChange?.(newScore);
+        return newScore;
+      });
     }
 
     // Send difficulty feedback
     busRef.current.onDifficultyFeedback?.(feedbackDifficulty);
 
     // Compute skill
-    const skill = calculateSkill(correct, wrong, learned);
+    const skill = calculateSkill(
+      scored ? correct + 1 : correct,
+      wrong,
+      learned
+    );
     busRef.current.onSkillChange?.(skill);
 
     setCompleted(true);
     busRef.current.onCardCompleted?.();
 
     // Proceed to next
-    busRef.current.onRequestNextQuestion?.();
+    setTimeout(() => {
+      busRef.current.onRequestNextQuestion?.();
+    }, 200);
   };
 
   if (!question) {
@@ -184,7 +196,7 @@ const FlashcardEngine: React.FC<Props> = ({ busRef }) => {
           borderRadius: 4,
         }}
       >
-        Complete
+        Next
       </button>
     </div>
   );

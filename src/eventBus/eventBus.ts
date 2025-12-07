@@ -13,6 +13,7 @@ export type EventBus = {
   onDifficultyFeedback?: (difficultyScore: number) => void;
   onCardCompleted?: () => void;
   onReveal?: () => void;
+  onScoreChange?: (score: number) => void;
 
   // Adaptive generator → Flashcard
   onProvideQuestion?: (q: Question) => void;

@@ -22,8 +22,8 @@ const TestContainer: React.FC<Props> = ({ difficulty, onComplete }) => {
 
   busRef.current.onReveal = () => setLearned((l) => l + 1);
 
-  busRef.current.onCardCompleted = () => {
-    // Nothing special here (score is in Flashcard)
+  busRef.current.onScoreChange = (newScore) => {
+    setScore(newScore);
   };
 
   return (

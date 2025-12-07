@@ -12,7 +12,7 @@ const AdaptiveGenerator: React.FC<Props> = ({ busRef, selectedDifficulty }) => {
   const [pool, setPool] = useState<Question[]>([]);
   const [index, setIndex] = useState(0);
 
-  // Fetch pool on difficulty change
+  // Fetch on difficulty change
   useEffect(() => {
     let cancelled = false;
 
